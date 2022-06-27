@@ -1,13 +1,15 @@
 ## TODO
 
-- [ ] Make landing page of `Flower Catalog Website`
-- [ ] Create page of `Abeliophyllum`
-- [ ] Create page of `Ageratum`
-- [ ] Add styles for landing page
 - [ ] Parse space seperated query parameters
 - [ ] Format comments while showing them on `guest-book` page
+- [ ] Site should only work for `GET` method
 
 ## DONE
+- [x] Add styles
+- [x] Add styles for landing page
+- [x] Create page of `Ageratum`
+- [x] Create page of `Abeliophyllum`
+- [x] Make landing page of `Flower Catalog Website`
 - [x] Add styles for flowers page
   - [x] Allow user to type comment
   - [x] Show the the comments on same `guest-book` page
