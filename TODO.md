@@ -5,8 +5,9 @@
 - [ ] Create page of `Abeliophyllum`
 - [ ] Create page of `Ageratum`
 - [ ] Create page of `Guest Book`
-- [ ] Make `src` directory
-- [ ] Serve landing page when uri is `/`
+- [ ] Redirect to `Abeliophyllum` page when clicked on `Abeliophyllum` link
 
 ## DONE
 - [x] Make `public` directory
+- [x] Make `src` directory
+- [x] Serve landing page when uri is `/`
