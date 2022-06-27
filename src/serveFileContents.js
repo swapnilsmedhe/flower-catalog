@@ -4,7 +4,8 @@ const contentTypes = {
   html: 'text/html',
   jpg: 'image/jpg',
   png: 'image/png',
-  css: 'text/css'
+  css: 'text/css',
+  pdf: 'application/pdf'
 };
 
 const determineContentType = (fileName) => {
