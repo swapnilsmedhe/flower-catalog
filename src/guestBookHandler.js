@@ -15,7 +15,7 @@ const readGuestBookTemplate = () => {
   return template;
 };
 
-const updateComments = (comments) => {
+const storeComments = (comments) => {
   fs.writeFileSync('./data/comments.json', JSON.stringify(comments), 'utf8');
 };
 
@@ -40,7 +40,7 @@ const commentsHandler = (request, response) => {
 
   if (name && comment) {
     comments.unshift({ name, comment, date: getTimestamp() });
-    updateComments(comments);
+    storeComments(comments);
   }
 
   const guestBook = generateGuestBookHtml(comments);
