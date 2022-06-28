@@ -1,10 +1,10 @@
 ## TODO
 
-- [ ] Parse space seperated query parameters
 - [ ] Format comments while showing them on `guest-book` page
 - [ ] Site should only work for `GET` method
 
 ## DONE
+- [x] Parse space seperated query parameters
 - [x] Add styles
 - [x] Add styles for landing page
 - [x] Create page of `Ageratum`

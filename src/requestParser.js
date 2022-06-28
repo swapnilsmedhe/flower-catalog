@@ -1,10 +1,20 @@
+const parseValue = (value) => {
+  const decodingKeys = { '+': ' ', '%0D': '\r', '%0A': '\n' };
+  let parsedValue = value;
+
+  Object.entries(decodingKeys).forEach(([decodeKey, decodeValue]) => {
+    parsedValue = parsedValue.replaceAll(decodeKey, decodeValue);
+  });
+  return parsedValue;
+};
+
 const parseQueryParams = (paramString) => {
   const queryParams = {};
   const params = paramString.split('&');
 
   params.forEach((param) => {
     const [field, value] = param.split('=');
-    queryParams[field] = value;
+    queryParams[field] = parseValue(value);
   });
 
   return queryParams;
