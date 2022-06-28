@@ -2,7 +2,12 @@ const fs = require('fs');
 
 const readComments = () => {
   const comments = fs.readFileSync('./data/comments.json', 'utf8');
-  return JSON.parse(comments);
+  return comments;
+};
+
+const getComments = () => {
+  const comments = readComments();
+  return comments ? JSON.parse(comments) : [];
 };
 
 const readGuestBookTemplate = () => {
@@ -14,26 +19,31 @@ const updateComments = (comments) => {
   fs.writeFileSync('./data/comments.json', JSON.stringify(comments), 'utf8');
 };
 
-const generateGuestBook = (comments) => {
+const generateCommentHtml = ({ name, comment, date }) => {
+  return `<p>${date} ${name}: ${comment}</p>`;
+};
+
+const generateGuestBookHtml = (comments) => {
   const template = readGuestBookTemplate();
+  const commentsHtml = comments.map(generateCommentHtml).join('');
+  return template.replace('__COMMENTS__', commentsHtml);
+};
 
-  const commentsHtlm = comments.map(({ name, comment, date }) => {
-    return `<p>${date} ${name} ${comment}</p>`;
-  }).join('');
-
-  return template.replace('__COMMENTS__', commentsHtlm);
+const getTimestamp = () => {
+  const date = new Date();
+  return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
 };
 
 const commentsHandler = (request, response) => {
-  const comments = readComments();
+  const comments = getComments();
   const { queryParams: { name, comment } } = request;
 
   if (name && comment) {
-    comments.unshift({ name, comment, date: new Date().toString() });
+    comments.unshift({ name, comment, date: getTimestamp() });
     updateComments(comments);
   }
 
-  const guestBook = generateGuestBook(comments);
+  const guestBook = generateGuestBookHtml(comments);
   response.send(guestBook);
   return true;
 };
