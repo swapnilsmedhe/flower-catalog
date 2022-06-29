@@ -11,7 +11,7 @@ const getGuestBook = () => {
 };
 
 const readGuestBookTemplate = () => {
-  const template = fs.readFileSync('./public/guest-book.html', 'utf8');
+  const template = fs.readFileSync('./resources/guest-book-template.html', 'utf8');
   return template;
 };
 
