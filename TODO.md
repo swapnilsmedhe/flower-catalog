@@ -2,11 +2,11 @@
 
 - [ ] Format comments while showing them on `guest-book` page
 - [ ] Site should only work for `GET` method
-- [ ] Use `http` module for server
-- [ ] Use `URL` module for parsing of `url`
-- [ ] Separate sever and application code
 
 ## DONE
+- [x] Use `http` module for server
+- [x] Use `URL` module for parsing of `url`
+- [x] Separate sever and application code
 - [x] Parse space seperated query parameters
 - [x] Add styles
 - [x] Add styles for landing page

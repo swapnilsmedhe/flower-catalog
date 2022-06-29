@@ -13,16 +13,18 @@ const determineContentType = (fileName) => {
   return contentTypes[extension] || 'text/plain';
 };
 
-const serveFileContents = (request, response, path) => {
-  const { uri } = request;
-  let fileName = uri === '/' ? path + '/index.html' : path + uri;
+const serveFileContents = (root) => (request, response) => {
+  const { pathname } = request.url;
+  let fileName = pathname === '/' ? root + '/index.html' : root + pathname;
 
-  if (!fs.existsSync(fileName)) {
+  try {
+    const content = fs.readFileSync(fileName);
+    response.setHeader('Content-type', determineContentType(fileName));
+    response.end(content);
+  } catch (error) {
     return false;
   }
-  const content = fs.readFileSync(fileName);
-  response.addHeader('Content-Type', determineContentType(fileName))
-  response.send(content);
+
   return true;
 };
 
