@@ -19,39 +19,28 @@ const saveGuestBook = (comments) => {
   fs.writeFileSync('./data/guestBook.json', JSON.stringify(comments), 'utf8');
 };
 
-const generateCommentHtml = ({ name, comment, date }) => {
-  return `<p>${date} ${name}: ${comment}</p>`;
-};
-
-const generateGuestBookHtml = (comments) => {
+const generateGuestBookPage = (guestBook) => {
   const template = readGuestBookTemplate();
-  const commentsHtml = comments.map(generateCommentHtml).join('');
-  return template.replace('__COMMENTS__', commentsHtml);
-};
-
-const getTimestamp = () => {
-  const date = new Date();
-  return date.toLocaleDateString() + date.toLocaleTimeString();
+  return template.replace('__COMMENTS__', guestBook.toHtml());
 };
 
 const showGuestBook = (request, response) => {
-  response.end(generateGuestBookHtml(request.guestBook));
+  response.end(generateGuestBookPage(request.guestBook));
   return true;
 };
 
 const getComment = ({ searchParams }) => {
   const comment = searchParams.get('comment');
   const name = searchParams.get('name');
-  const date = getTimestamp();
-  return { name, comment, date };
+  return { name, comment };
 };
 
 const commentsHandler = (request, response) => {
   const { guestBook } = request;
   const comment = getComment(request.url);
-  guestBook.unshift(comment);
+  guestBook.addComment(comment);
 
-  saveGuestBook(guestBook)
+  saveGuestBook(guestBook.commentList)
   response.statusCode = 302;
   response.setHeader('Location', '/guest-book');
   response.end();
