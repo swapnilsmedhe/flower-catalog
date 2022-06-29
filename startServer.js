@@ -1,8 +1,8 @@
 const { createServer } = require('net');
-const { onConnection } = require('./src/server.js');
-const { serveFileContents } = require('./src/serveFileContents.js');
-const { guestBookHandler } = require('./src/guestBookHandler.js');
-const { notFoundHandler } = require('./src/notFoundHandler.js');
+const { onConnection } = require('./src/server/server.js');
+const { serveFileContents } = require('./src/app/serveFileContents.js');
+const { guestBookHandler } = require('./src/app/guestBookHandler.js');
+const { notFoundHandler } = require('./src/app/notFoundHandler.js');
 
 const createHandler = (handlers, path = './public') => (request, response) => {
   return handlers.some((handler) => handler(request, response, path));
