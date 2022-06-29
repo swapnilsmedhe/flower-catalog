@@ -1,14 +1,14 @@
-const { parseRequest } = require('./requestParser.js');
-const { Response } = require('./response.js');
+const http = require('http');
+const { URL } = require('url');
 
-const onConnection = (socket, handler) => {
-  socket.on('data', (chunk) => {
-    const request = parseRequest(chunk.toString());
-    const response = new Response(socket);
-    console.log(request.method, request.uri);
+const startServer = (port, handler) => {
+  const server = http.createServer((request, response) => {
+    request.url = new URL(`http://${request.headers.host}${request.url}`);
+    console.log(request.method, request.url.pathname);
     handler(request, response);
   });
-  socket.on('error', (err) => console.error(err));
-}
 
-module.exports = { onConnection };
+  server.listen(port, console.log(`Listening on ${port}`))
+};
+
+module.exports = { startServer }
