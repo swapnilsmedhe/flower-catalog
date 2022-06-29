@@ -1,4 +1,4 @@
 const { startServer } = require('./src/server/server.js');
-const { handle } = require("./src/app");
+const { app } = require("./src/app");
 
-startServer(80, handle);
+startServer(80, app);

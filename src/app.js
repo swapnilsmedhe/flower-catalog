@@ -1,7 +1,12 @@
-const { notFoundHandler } = require('./handlers/notFoundHandler.js');
-const { serveStaticFrom } = require('./handlers/staticFileHandler.js');
+const { createGuestBookHandler, getGuestBook } = require('./app/guestBookHandler.js');
+const { notFoundHandler } = require('./app/notFoundHandler.js');
+const { serveStaticFrom } = require('./app/staticFileHandler.js');
 const { createRouter } = require('./server/router.js');
 
-const handle = createRouter(serveStaticFrom('./public'), notFoundHandler);
+const app = createRouter(
+  createGuestBookHandler(getGuestBook()),
+  serveStaticFrom('./public'),
+  notFoundHandler
+);
 
-module.exports = { handle };
+module.exports = { app };

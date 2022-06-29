@@ -7,4 +7,4 @@ const createRouter = (...handlers) => (request, response) => {
   return false;
 }
 
-module.exports = { createRouter };
+module.exports = { createRouter }
