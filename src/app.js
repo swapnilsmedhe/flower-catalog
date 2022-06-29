@@ -1,11 +1,12 @@
-const { GuestBook } = require('./app/guestBook.js');
-const { createGuestBookHandler, getGuestBook } = require('./app/guestBookHandler.js');
+const { createGuestBook } = require('./app/guestBook.js');
+const { createGuestBookHandler } = require('./app/guestBookHandler.js');
 const { notFoundHandler } = require('./app/notFoundHandler.js');
 const { serveStaticFrom } = require('./app/staticFileHandler.js');
 const { createRouter } = require('./server/router.js');
 
-const guestBook = new GuestBook(getGuestBook());
-const guestBookHandler = createGuestBookHandler(guestBook);
+const guestBookfile = './data/guestBook.json';
+const guestBook = createGuestBook(guestBookfile);
+const guestBookHandler = createGuestBookHandler(guestBook, guestBookfile);
 
 const app = createRouter(
   guestBookHandler,

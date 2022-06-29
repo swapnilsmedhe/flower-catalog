@@ -1,22 +1,12 @@
 const fs = require('fs');
 
-const readGuestBook = () => {
-  const comments = fs.readFileSync('./data/guestBook.json', 'utf8');
-  return comments;
-};
-
-const getGuestBook = () => {
-  const guestBook = readGuestBook();
-  return guestBook ? JSON.parse(guestBook) : [];
+const writeToFile = (fileName, content) => {
+  fs.writeFileSync(fileName, content);
 };
 
 const readGuestBookTemplate = () => {
   const template = fs.readFileSync('./resources/guest-book-template.html', 'utf8');
   return template;
-};
-
-const saveGuestBook = (comments) => {
-  fs.writeFileSync('./data/guestBook.json', JSON.stringify(comments), 'utf8');
 };
 
 const generateGuestBookPage = (guestBook) => {
@@ -40,25 +30,27 @@ const commentsHandler = (request, response) => {
   const comment = getComment(request.url);
   guestBook.addComment(comment);
 
-  saveGuestBook(guestBook.commentList)
+  writeToFile(request.guestBookFile, guestBook.toString());
   response.statusCode = 302;
   response.setHeader('Location', '/guest-book');
   response.end();
   return true;
 };
 
-const createGuestBookHandler = (guestBook) => (request, response) => {
-  const { pathname } = request.url;
-  if (pathname === '/guest-book' && request.method === 'GET') {
-    request.guestBook = guestBook;
-    return showGuestBook(request, response);
-  }
+const createGuestBookHandler = (guestBook, guestBookFile) =>
+  (request, response) => {
+    const { pathname } = request.url;
+    if (pathname === '/guest-book' && request.method === 'GET') {
+      request.guestBook = guestBook;
+      return showGuestBook(request, response);
+    }
 
-  if (pathname === '/add-comment' && request.method === 'GET') {
-    request.guestBook = guestBook;
-    return commentsHandler(request, response);
-  }
-  return false;
-};
+    if (pathname === '/add-comment' && request.method === 'GET') {
+      request.guestBook = guestBook;
+      request.guestBookFile = guestBookFile;
+      return commentsHandler(request, response);
+    }
+    return false;
+  };
 
-module.exports = { createGuestBookHandler, getGuestBook }
+module.exports = { createGuestBookHandler }
