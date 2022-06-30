@@ -6,7 +6,8 @@ const { serveStaticFrom } = require('./app/staticFileHandler.js');
 const { createRouter } = require('./server/router.js');
 
 const guestBookfile = './data/guestBook.json';
-const guestBook = createGuestBook(guestBookfile);
+const templateFile = './resources/guest-book-template.html';
+const guestBook = createGuestBook(guestBookfile, templateFile);
 const guestBookHandler = createGuestBookHandler(guestBook, guestBookfile);
 const apiHandler = createApiHandler(guestBook);
 

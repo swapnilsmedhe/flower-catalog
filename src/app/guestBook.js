@@ -1,12 +1,12 @@
 const fs = require('fs');
 
-const readGuestBook = (guestBookFile) => {
-  const guestBook = fs.readFileSync(guestBookFile, 'utf8');
-  return guestBook;
+const readFile = (fileName) => {
+  const content = fs.readFileSync(fileName, 'utf8');
+  return content;
 };
 
 const getGuestBook = (guestBookFile) => {
-  const guestBook = readGuestBook(guestBookFile);
+  const guestBook = readFile(guestBookFile);
   return guestBook ? JSON.parse(guestBook) : [];
 };
 
@@ -17,9 +17,11 @@ const getTimestamp = () => {
 
 class GuestBook {
   #comments;
+  #template;
 
-  constructor(comments) {
+  constructor(comments, template) {
     this.#comments = comments;
+    this.#template = template;
   }
 
   addComment({ name, comment }) {
@@ -27,9 +29,10 @@ class GuestBook {
   };
 
   toHtml() {
-    return this.#comments.map(({ name, comment, timestamp }) =>
+    const commentsHtml = this.#comments.map(({ name, comment, timestamp }) =>
       `<p>${timestamp} ${name}: ${comment}</p>`
     ).join('');
+    return this.#template.replace('__COMMENTS', commentsHtml);
   }
 
   toString() {
@@ -37,9 +40,10 @@ class GuestBook {
   }
 }
 
-const createGuestBook = (guestBookFile) => {
+const createGuestBook = (guestBookFile, templateFile) => {
   const comments = getGuestBook(guestBookFile);
-  return new GuestBook(comments);
+  const template = readFile(templateFile);
+  return new GuestBook(comments, template);
 };
 
 module.exports = { createGuestBook };

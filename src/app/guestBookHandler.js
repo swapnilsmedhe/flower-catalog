@@ -4,18 +4,8 @@ const writeToFile = (fileName, content) => {
   fs.writeFileSync(fileName, content);
 };
 
-const readGuestBookTemplate = () => {
-  const template = fs.readFileSync('./resources/guest-book-template.html', 'utf8');
-  return template;
-};
-
-const generateGuestBookPage = (guestBook) => {
-  const template = readGuestBookTemplate();
-  return template.replace('__COMMENTS__', guestBook.toHtml());
-};
-
 const showGuestBook = (request, response) => {
-  response.end(generateGuestBookPage(request.guestBook));
+  response.end(request.guestBook.toHtml());
   return true;
 };
 
