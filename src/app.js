@@ -5,17 +5,20 @@ const { notFoundHandler } = require('./app/notFoundHandler.js');
 const { serveStaticFrom } = require('./app/staticFileHandler.js');
 const { createRouter } = require('./server/router.js');
 
-const guestBookfile = './data/guestBook.json';
-const templateFile = './resources/guest-book-template.html';
-const guestBook = createGuestBook(guestBookfile, templateFile);
-const guestBookHandler = createGuestBookHandler(guestBook, guestBookfile);
-const apiHandler = createApiHandler(guestBook);
+const app = ({ serveFrom, dataFile: guestBookFile }) => {
+  const templateFile = './resources/guest-book-template.html';
+  const guestBook = createGuestBook(guestBookFile, templateFile);
+  const guestBookHandler = createGuestBookHandler(guestBook, guestBookFile);
+  const apiHandler = createApiHandler(guestBook);
 
-const app = createRouter(
-  apiHandler,
-  guestBookHandler,
-  serveStaticFrom('./public'),
-  notFoundHandler
-);
+  const router = createRouter(
+    apiHandler,
+    guestBookHandler,
+    serveStaticFrom(serveFrom),
+    notFoundHandler
+  );
+  return router;
+}
+
 
 module.exports = { app };
