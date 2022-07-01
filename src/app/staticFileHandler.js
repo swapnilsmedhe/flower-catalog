@@ -18,16 +18,23 @@ const serveStaticFrom = (root) => (request, response, next) => {
   const { pathname } = request.url;
   const fileName = pathname === '/' ? '/index.html' : pathname;
   const filePath = path.join(root, fileName);
-  const extension = path.extname(fileName);
-  const mimeType = getMimeType(extension);
 
-  try {
-    const content = fs.readFileSync(filePath);
+  if (request.method !== 'GET') {
+    next();
+    return;
+  }
+
+  fs.readFile(filePath, (err, content) => {
+    if (err) {
+      next();
+      return;
+    }
+    const extension = path.extname(filePath);
+    const mimeType = getMimeType(extension);
+
     response.setHeader('Content-type', mimeType);
     response.end(content);
-  } catch (error) {
-    next();
-  }
+  });
 };
 
 module.exports = { serveStaticFrom };

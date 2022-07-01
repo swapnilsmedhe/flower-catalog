@@ -3,6 +3,22 @@
 <head>
   <title>Flower Catalog</title>
   <link rel="stylesheet" href="css/styles.css">
+
+  <script>
+
+    const hideForASecond = (event) => {
+      const target = event.target;
+      target.style.visibility = 'hidden';
+      setTimeout(() => target.style.visibility = 'visible', 1000);
+    };
+
+    const main = () => {
+      const jar = document.getElementById('jar');
+      jar.addEventListener('click', () => hideForASecond(event));
+    };
+
+    window.onload = main;
+  </script>
 </head>
 
 <body>
@@ -19,8 +35,10 @@
         <li><a href="ageratum.html">Ageratum</a></li>
       </ul>
       <div>
+        <figure id="jar">
+          <img src="images/animated-flower-image-0021.gif" alt="animated-flower">
+        </figure>
         <a href="guest-book">Guest Book</a>
-        <img src="images/animated-flower-image-0021.gif" alt="animated-flower">
       </div>
     </nav>
   </main>
