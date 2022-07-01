@@ -1,5 +1,4 @@
 const fs = require('fs');
-const { URLSearchParams } = require('url');
 
 const writeToFile = (fileName, content) => {
   fs.writeFileSync(fileName, content);
@@ -40,14 +39,7 @@ const createGuestBookHandler = (guestBook, guestBookFile) =>
     if (pathname === '/add-comment' && request.method === 'POST') {
       request.guestBook = guestBook;
       request.guestBookFile = guestBookFile;
-
-      let data = '';
-      request.setEncoding('utf8');
-      request.on('data', (chunk) => data += chunk);
-      request.on('end', () => {
-        request.bodyParams = new URLSearchParams(data);
-        commentsHandler(request, response, next);
-      });
+      commentsHandler(request, response, next);
       return;
     }
     next()

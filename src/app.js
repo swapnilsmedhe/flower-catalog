@@ -3,6 +3,7 @@ const { createGuestBook } = require('./app/guestBook.js');
 const { createGuestBookHandler } = require('./app/guestBookHandler.js');
 const { logRequestHandler } = require('./app/logRequestHandler.js');
 const { notFoundHandler } = require('./app/notFoundHandler.js');
+const { parseBodyParams } = require('./app/parseBodyParams.js');
 const { parseUrlHandler } = require('./app/parseUrlHandler.js');
 const { serveStaticFrom } = require('./app/staticFileHandler.js');
 const { createRouter } = require('./server/router.js');
@@ -15,6 +16,7 @@ const app = ({ serveFrom, dataFile: guestBookFile }) => {
 
   const router = createRouter(
     parseUrlHandler,
+    parseBodyParams,
     logRequestHandler,
     apiHandler,
     guestBookHandler,
