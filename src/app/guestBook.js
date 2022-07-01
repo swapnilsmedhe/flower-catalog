@@ -15,6 +15,10 @@ const getTimestamp = () => {
   return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
 };
 
+const generateCommentRow = ({ name, comment, timestamp }) => {
+  return `<tr><td>${timestamp}</td><td>${name}</td><td>${comment}</td></tr>`;
+};
+
 class GuestBook {
   #comments;
   #template;
@@ -29,10 +33,8 @@ class GuestBook {
   };
 
   toHtml() {
-    const commentsHtml = this.#comments.map(({ name, comment, timestamp }) =>
-      `<p>${timestamp} ${name}: ${comment}</p>`
-    ).join('');
-    return this.#template.replace('__COMMENTS', commentsHtml);
+    const commentsHtml = this.#comments.map(generateCommentRow).join('');
+    return this.#template.replace('__COMMENTS__', commentsHtml);
   }
 
   toString() {
