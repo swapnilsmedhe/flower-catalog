@@ -24,5 +24,4 @@ const app = ({ serveFrom, dataFile: guestBookFile }) => {
   return router;
 }
 
-
 module.exports = { app };

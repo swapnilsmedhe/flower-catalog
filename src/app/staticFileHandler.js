@@ -14,7 +14,7 @@ const getMimeType = (extension) => {
   return mimeTypes[extension] || 'text/plain';
 };
 
-const serveStaticFrom = (root) => (request, response) => {
+const serveStaticFrom = (root) => (request, response, next) => {
   const { pathname } = request.url;
   const fileName = pathname === '/' ? '/index.html' : pathname;
   const filePath = path.join(root, fileName);
@@ -26,10 +26,8 @@ const serveStaticFrom = (root) => (request, response) => {
     response.setHeader('Content-type', mimeType);
     response.end(content);
   } catch (error) {
-    return false;
+    next();
   }
-
-  return true;
 };
 
 module.exports = { serveStaticFrom };

@@ -1,17 +1,16 @@
-const commentsApiHandler = (request, response) => {
+const commentsApiHandler = (request, response, next) => {
   const { guestBook } = request;
   response.setHeader('Content-type', 'application/json');
   response.end(guestBook.toString());
-  return true;
 }
 
-const createApiHandler = (guestBook) => (request, response) => {
+const createApiHandler = (guestBook) => (request, response, next) => {
   const { pathname } = request.url;
   if (pathname === '/api/comments' && request.method === 'GET') {
     request.guestBook = guestBook;
-    return commentsApiHandler(request, response);
+    commentsApiHandler(request, response, next);
   }
-  return false;
+  next();
 };
 
 module.exports = { createApiHandler }
