@@ -4,13 +4,14 @@ const commentsApiHandler = (request, response, next) => {
   response.end(guestBook.toString());
 }
 
-const createApiHandler = (guestBook) => (request, response, next) => {
+const createApiRouter = (guestBook) => (request, response, next) => {
   const { pathname } = request.url;
   if (pathname === '/api/comments' && request.method === 'GET') {
     request.guestBook = guestBook;
     commentsApiHandler(request, response, next);
+    return;
   }
   next();
 };
 
-module.exports = { createApiHandler }
+module.exports = { createApiRouter }

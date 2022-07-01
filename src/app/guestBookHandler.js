@@ -6,7 +6,6 @@ const writeToFile = (fileName, content) => {
 
 const showGuestBook = (request, response, next) => {
   response.end(request.guestBook.toHtml());
-  return;
 };
 
 const getComment = ({ bodyParams }) => {
@@ -24,10 +23,9 @@ const commentsHandler = (request, response, next) => {
   response.statusCode = 302;
   response.setHeader('Location', '/guest-book');
   response.end();
-  return;
 };
 
-const createGuestBookHandler = (guestBook, guestBookFile) =>
+const createGuestBookRouter = (guestBook, guestBookFile) =>
   (request, response, next) => {
     const { pathname } = request.url;
     if (pathname === '/guest-book' && request.method === 'GET') {
@@ -45,4 +43,4 @@ const createGuestBookHandler = (guestBook, guestBookFile) =>
     next()
   };
 
-module.exports = { createGuestBookHandler }
+module.exports = { createGuestBookRouter }

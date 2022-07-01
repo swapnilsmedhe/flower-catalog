@@ -1,25 +1,25 @@
-const { createApiHandler } = require('./app/apiHandler.js');
+const { createApiRouter } = require('./app/apiHandler.js');
 const { createGuestBook } = require('./app/guestBook.js');
-const { createGuestBookHandler } = require('./app/guestBookHandler.js');
-const { logRequestHandler } = require('./app/logRequestHandler.js');
+const { createGuestBookRouter } = require('./app/guestBookHandler.js');
+const { logRequest } = require('./app/logRequest.js');
 const { notFoundHandler } = require('./app/notFoundHandler.js');
 const { parseBodyParams } = require('./app/parseBodyParams.js');
-const { parseUrlHandler } = require('./app/parseUrlHandler.js');
+const { parseUrl } = require('./app/parseUrl.js');
 const { serveStaticFrom } = require('./app/staticFileHandler.js');
 const { createRouter } = require('./server/router.js');
 
 const app = ({ serveFrom, dataFile: guestBookFile }) => {
   const templateFile = './resources/guest-book-template.html';
   const guestBook = createGuestBook(guestBookFile, templateFile);
-  const guestBookHandler = createGuestBookHandler(guestBook, guestBookFile);
-  const apiHandler = createApiHandler(guestBook);
+  const guestBookRouter = createGuestBookRouter(guestBook, guestBookFile);
+  const apiRouter = createApiRouter(guestBook);
 
   const router = createRouter(
-    parseUrlHandler,
+    parseUrl,
     parseBodyParams,
-    logRequestHandler,
-    apiHandler,
-    guestBookHandler,
+    logRequest,
+    apiRouter,
+    guestBookRouter,
     serveStaticFrom(serveFrom),
     notFoundHandler
   );
