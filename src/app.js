@@ -9,7 +9,7 @@ const { serveStaticFrom } = require('./app/staticFileHandler.js');
 const { createRouter } = require('./server/router.js');
 const { injectCookies } = require('./app/injectCookies.js');
 const { createSessionInjector } = require('./app/injectSession.js');
-const { createLoginHandler } = require('./app/loginHandler');
+const { createLoginHandler, loginPageHandler } = require('./app/loginHandler');
 
 
 const app = ({ serveFrom, dataFile: guestBookFile }) => {
@@ -28,6 +28,7 @@ const app = ({ serveFrom, dataFile: guestBookFile }) => {
     logRequest,
     injectCookies,
     injectSession,
+    loginPageHandler,
     loginHandler,
     apiRouter,
     guestBookRouter,

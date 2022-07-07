@@ -1,5 +1,20 @@
 const { loginPage } = require('../view/loginPage.js');
 
+const loginPageHandler = (request, response, next) => {
+  const { pathname } = request.url;
+  if (pathname !== '/login' || request.method !== 'GET') {
+    next();
+    return;
+  }
+
+  if (!request.session) {
+    response.end(loginPage);
+    return;
+  }
+
+  next();
+};
+
 const createSession = (username) => {
   const time = new Date();
   return { username, time, sessionId: time.getTime() };
@@ -10,11 +25,6 @@ const createLoginHandler = (sessions) => (request, response, next) => {
 
   if (pathname !== '/login') {
     next();
-    return;
-  }
-
-  if (request.method === 'GET' && !request.session) {
-    response.end(loginPage);
     return;
   }
 
@@ -32,4 +42,4 @@ const createLoginHandler = (sessions) => (request, response, next) => {
   next();
 };
 
-module.exports = { createLoginHandler };
+module.exports = { createLoginHandler, loginPageHandler };
