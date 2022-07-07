@@ -8,7 +8,12 @@ const loginPageHandler = (request, response, next) => {
   }
 
   if (!request.session) {
+    response.setHeader('Content-type', 'text/html');
     response.end(loginPage);
+  } else {
+    response.statusCode = 302;
+    response.setHeader('Location', '/guest-book');
+    response.end();
     return;
   }
 
