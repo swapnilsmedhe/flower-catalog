@@ -10,7 +10,7 @@ const { createRouter } = require('./server/router.js');
 const { injectCookies } = require('./app/injectCookies.js');
 const { createSessionInjector } = require('./app/injectSession.js');
 const { createLoginHandler, loginPageHandler } = require('./app/loginHandler');
-
+const { createLogoutHandler } = require('./app/logoutHandler.js');
 
 const app = ({ serveFrom, dataFile: guestBookFile }) => {
   const templateFile = './resources/guest-book-template.html';
@@ -21,6 +21,7 @@ const app = ({ serveFrom, dataFile: guestBookFile }) => {
   const sessions = {};
   const injectSession = createSessionInjector(sessions);
   const loginHandler = createLoginHandler(sessions);
+  const logoutHandler = createLogoutHandler(sessions);
 
   const router = createRouter(
     parseUrl,
@@ -30,8 +31,9 @@ const app = ({ serveFrom, dataFile: guestBookFile }) => {
     injectSession,
     loginPageHandler,
     loginHandler,
-    apiRouter,
+    logoutHandler,
     guestBookRouter,
+    apiRouter,
     serveStaticFrom(serveFrom),
     notFoundHandler
   );
