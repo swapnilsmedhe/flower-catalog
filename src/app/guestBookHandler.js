@@ -20,8 +20,7 @@ const commentsHandler = (request, response, next) => {
   guestBook.addComment(comment);
 
   writeToFile(request.guestBookFile, guestBook.toString());
-  response.statusCode = 302;
-  response.setHeader('Location', '/guest-book');
+  response.statusCode = 201;
   response.end();
 };
 
