@@ -38,11 +38,23 @@ const writeComments = (xhr) => {
   commentSection.appendChild(commentsElement);
 };
 
-const displayComment = () => {
+const xhrRequest = (callback, statusCode, method, resource, body = '') => {
   const xhr = new XMLHttpRequest();
-  xhr.onload = () => writeComments(xhr);
-  xhr.open('GET', '/api/comments');
-  xhr.send();
+
+  xhr.onload = () => {
+    if (xhr.status === statusCode) {
+      callback(xhr);
+      return;
+    }
+    console.error('Unalbe to serve request');
+  };
+
+  xhr.open(method, resource);
+  xhr.send(body);
+};
+
+const displayComment = () => {
+  xhrRequest(writeComments, 200, 'GET', '/api/comments');
 };
 
 const postComment = () => {
@@ -50,10 +62,8 @@ const postComment = () => {
   const formData = new FormData(formElement);
   const body = new URLSearchParams(formData);
 
-  const xhr = new XMLHttpRequest();
-  xhr.onload = displayComment;
-  xhr.open('POST', '/add-comment');
-  xhr.send(body);
+  xhrRequest(displayComment, 201, 'POST', '/add-comment', body);
+  formElement.reset();
 };
 
 const main = () => {
