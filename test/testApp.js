@@ -4,17 +4,18 @@ const { app } = require('../src/app.js');
 
 const serveFrom = './test/data';
 const dataFile = './test/data/guestBookData.json';
+const config = { serveFrom, dataFile }
 
 describe('GET static pages', () => {
   it('should give Not found response with 404 on GET /hello.html', (done) => {
-    request(app({ serveFrom, dataFile }))
+    request(app(config))
       .get('/hello')
       .expect('Not found')
       .expect(404, done);
   });
 
   it('should serve index.html on GET /', (done) => {
-    request(app({ serveFrom, dataFile }))
+    request(app(config))
       .get('/')
       .expect(200)
       .expect('content-type', 'text/html')
@@ -34,7 +35,7 @@ describe('GET /api', () => {
   afterEach(() => fs.writeFileSync(dataFile, ''));
 
   it('should give comments as json on GET /api/comments', (done) => {
-    request(app({ serveFrom, dataFile }))
+    request(app(config))
       .get('/api/comments')
       .expect(200)
       .expect('content-type', 'application/json')
@@ -44,7 +45,7 @@ describe('GET /api', () => {
 
 describe('GET /login', () => {
   it('should give login page when user is not logged in', (done) => {
-    request(app({ serveFrom, dataFile }))
+    request(app(config))
       .get('/login')
       .expect(200)
       .expect('content-type', 'text/html')
@@ -60,10 +61,21 @@ describe('GET /login', () => {
       }
     }
 
-    request(app({ serveFrom, dataFile }, sessions))
+    request(app(config, sessions))
       .get('/login')
       .set('cookie', 'sessionId=1657696970414')
-      .expect(302)
-      .expect('Location', '/guest-book', done);
+      .expect('Location', '/guest-book')
+      .expect(302, done);
+  });
+});
+
+describe('POST /login', () => {
+  it('should redirect to /guest-book on successful login', (done) => {
+    request(app(config))
+      .post('/login')
+      .send('username=john')
+      .expect('Location', '/guest-book')
+      .expect('set-cookie', /sessionId=..*/)
+      .expect(302, done);
   });
 });
