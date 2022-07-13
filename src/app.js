@@ -18,10 +18,9 @@ const app = ({ serveFrom, dataFile: guestBookFile }) => {
   const guestBookRouter = createGuestBookRouter(guestBook, guestBookFile);
   const apiRouter = createApiRouter(guestBook);
 
-  const userDatabase = { swapnil: 'IamSwapnil', azhar: 'ha toh' };
   const sessions = {};
   const injectSession = createSessionInjector(sessions);
-  const loginHandler = createLoginHandler(sessions, userDatabase);
+  const loginHandler = createLoginHandler(sessions);
   const logoutHandler = createLogoutHandler(sessions);
 
   const router = createRouter(
