@@ -46,4 +46,5 @@ const createLoginHandler = (sessions) => (request, response, next) => {
 
   next();
 };
+
 module.exports = { createLoginHandler, loginPageHandler };

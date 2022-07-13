@@ -3,7 +3,8 @@ const { app } = require("./src/app");
 
 const configuration = {
   serveFrom: './public',
-  dataFile: './data/guestBook.json'
+  dataFile: './data/guestBook.json',
+  logger: console.log
 };
 
 const sessions = {};

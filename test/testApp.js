@@ -4,7 +4,7 @@ const { app } = require('../src/app.js');
 
 const serveFrom = './test/data';
 const dataFile = './test/data/guestBookData.json';
-const config = { serveFrom, dataFile }
+const config = { serveFrom, dataFile, logger: (x) => x };
 
 describe('GET static pages', () => {
   it('should give Not found response with 404 on GET /hello.html', (done) => {
