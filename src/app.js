@@ -12,16 +12,14 @@ const { createSessionInjector } = require('./app/injectSession.js');
 const { createLoginHandler, loginPageHandler } = require('./app/loginHandler');
 const { createLogoutHandler } = require('./app/logoutHandler.js');
 
-const app = ({ serveFrom, dataFile: guestBookFile }) => {
+const app = ({ serveFrom, dataFile: guestBookFile }, sessions = {}) => {
   const templateFile = './resources/guest-book-template.html';
   const guestBook = createGuestBook(guestBookFile, templateFile);
   const guestBookRouter = createGuestBookRouter(guestBook, guestBookFile);
   const apiRouter = createApiRouter(guestBook);
 
-  const userDatabase = { swapnil: 'IamSwapnil', azhar: 'ha toh' };
-  const sessions = {};
   const injectSession = createSessionInjector(sessions);
-  const loginHandler = createLoginHandler(sessions, userDatabase);
+  const loginHandler = createLoginHandler(sessions);
   const logoutHandler = createLogoutHandler(sessions);
 
   const router = createRouter(
