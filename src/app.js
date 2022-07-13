@@ -12,7 +12,7 @@ const { createSessionInjector } = require('./app/injectSession.js');
 const { createLoginHandler, loginPageHandler } = require('./app/loginHandler');
 const { createLogoutHandler } = require('./app/logoutHandler.js');
 
-const app = ({ serveFrom, dataFile: guestBookFile, logger }, sessions = {}) => {
+const app = ({ serveFrom, dataFile: guestBookFile, logger }, users, sessions = {}) => {
   const templateFile = './resources/guest-book-template.html';
   const guestBook = createGuestBook(guestBookFile, templateFile);
   const guestBookRouter = createGuestBookRouter(guestBook, guestBookFile);
@@ -20,7 +20,7 @@ const app = ({ serveFrom, dataFile: guestBookFile, logger }, sessions = {}) => {
   const logRequest = createRequestLogHandler(logger);
 
   const injectSession = createSessionInjector(sessions);
-  const loginHandler = createLoginHandler(sessions);
+  const loginHandler = createLoginHandler(sessions, users);
   const logoutHandler = createLogoutHandler(sessions);
 
   const router = createRouter(

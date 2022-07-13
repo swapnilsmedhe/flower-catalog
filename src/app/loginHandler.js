@@ -26,25 +26,49 @@ const createSession = (username) => {
   return { username, time, sessionId: time.getTime() };
 };
 
-const createLoginHandler = (sessions) => (request, response, next) => {
+const isUserValid = ({ username, password }, users) => {
+  const user = users[username];
+  if (!user) {
+    return false;
+  }
+  return password === user.password;
+};
+
+const getLoginCredentials = ({ bodyParams }) => {
+  const username = bodyParams.get('username');
+  const password = bodyParams.get('password');
+  return { username, password };
+};
+
+const invalidCredentialsHandler = (request, response) => {
+  response.statusCode = 401;
+  response.end('Invalid username or password');
+};
+
+const createLoginHandler = (sessions, users) => (request, response, next) => {
   const { pathname } = request.url;
 
-  if (pathname !== '/login') {
+  if (pathname !== '/login' || request.method !== 'POST') {
     next();
     return;
   }
 
-  const username = request.bodyParams.get('username');
-  if (request.method === 'POST' && username) {
-    const session = createSession(username);
-    sessions[session.sessionId] = session;
-    response.setHeader('Set-Cookie', `sessionId=${session.sessionId}`);
-
+  if (request.session) {
     redirectToGuestBook(request, response);
     return;
   }
 
-  next();
+  const loginCredentials = getLoginCredentials(request);
+  if (!isUserValid(loginCredentials, users)) {
+    invalidCredentialsHandler(request, response);
+    return;
+  }
+
+  const session = createSession(loginCredentials.username);
+  sessions[session.sessionId] = session;
+  response.setHeader('Set-Cookie', `sessionId=${session.sessionId}`);
+
+  redirectToGuestBook(request, response);
 };
 
 module.exports = { createLoginHandler, loginPageHandler };
