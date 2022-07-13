@@ -27,13 +27,13 @@ describe('GET static pages', () => {
 describe('GET /api', () => {
   const comments = [
     { name: "james", comment: "Hello", timestamp: "13/07/2022 11:06:48" }
-  ]
+  ];
 
   beforeEach(() => {
-    fs.writeFileSync(dataFile, JSON.stringify(comments));
+    fs.writeFileSync(config.dataFile, JSON.stringify(comments));
   });
 
-  afterEach(() => fs.writeFileSync(dataFile, ''));
+  afterEach(() => fs.writeFileSync(config.dataFile, ''));
 
   it('should give comments as json on GET /api/comments', (done) => {
     request(app(config))
@@ -57,16 +57,14 @@ describe('GET /login', () => {
     const users = {};
 
     const sessions = {
-      '1657696970414': {
-        username: 'james',
-        time: '2022-07-13T07:22:50.414Z',
-        sessionId: 1657696970414
+      '348': {
+        username: 'james', time: '2022-07-13T07:22:50.414Z', sessionId: 348
       }
     }
 
     request(app(config, users, sessions))
       .get('/login')
-      .set('cookie', 'sessionId=1657696970414')
+      .set('cookie', 'sessionId=348')
       .expect('Location', '/guest-book')
       .expect(302, done);
   });
@@ -77,10 +75,8 @@ describe('POST /login', () => {
     const users = { john: { name: 'John', password: 'john123' } };
 
     const sessions = {
-      '1657696970414': {
-        username: 'james',
-        time: '2022-07-13T07:22:50.414Z',
-        sessionId: 1657696970414
+      '348': {
+        username: 'james', time: '2022-07-13T07:22:50.414Z', sessionId: 348
       }
     }
 
@@ -101,5 +97,23 @@ describe('POST /login', () => {
       .send('username=james&password=james5')
       .expect(401)
       .expect('Invalid username or password', done)
+  });
+});
+
+describe('GET /logout', () => {
+  it('should log a user out on GET /logout', (done) => {
+    const users = { john: { name: 'John', password: 'john123' } };
+    const sessions = {
+      '348': {
+        username: 'james', time: '2022-07-13T07:22:50.414Z', sessionId: 348
+      }
+    }
+
+    request(app(config, users, sessions))
+      .get('/logout')
+      .set('cookie', 'sessionId=348')
+      .expect('set-cookie', 'sessionId=348; Max-Age=0')
+      .expect(302)
+      .expect('Location', '/login', done);
   });
 });
