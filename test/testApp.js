@@ -72,8 +72,7 @@ describe('GET /login', () => {
 
 describe('POST /login', () => {
   it('should redirect to /guest-book on successful login', (done) => {
-    const users = { john: { name: 'John', password: 'john123' } };
-
+    const users = { james: { name: 'James', password: 'james123' } };
     const sessions = {
       '348': {
         username: 'james', time: '2022-07-13T07:22:50.414Z', sessionId: 348
@@ -82,17 +81,14 @@ describe('POST /login', () => {
 
     request(app(config, users, sessions))
       .post('/login')
-      .send('username=john&password=john123')
+      .send('username=james&password=james123')
       .expect('Location', '/guest-book')
       .expect('set-cookie', /sessionId=..*/)
       .expect(302, done);
   });
 
   it('should respond 401 for unauthorised users', (done) => {
-    const users = {};
-    const sessions = {};
-
-    request(app(config, users, sessions))
+    request(app(config))
       .post('/login')
       .send('username=james&password=james5')
       .expect(401)
@@ -102,7 +98,7 @@ describe('POST /login', () => {
 
 describe('GET /logout', () => {
   it('should log a user out on GET /logout', (done) => {
-    const users = { john: { name: 'John', password: 'john123' } };
+    const users = { james: { name: 'james', password: 'james123' } };
     const sessions = {
       '348': {
         username: 'james', time: '2022-07-13T07:22:50.414Z', sessionId: 348
@@ -115,5 +111,60 @@ describe('GET /logout', () => {
       .expect('set-cookie', 'sessionId=348; Max-Age=0')
       .expect(302)
       .expect('Location', '/login', done);
+  });
+});
+
+describe('GET /guest-book', () => {
+  const comments = [
+    { name: "james", comment: "Hello", timestamp: "13/07/2022 11:06:48" }
+  ];
+
+  beforeEach(() => fs.writeFileSync(config.dataFile, JSON.stringify(comments)));
+  afterEach(() => fs.writeFileSync(config.dataFile, ''));
+
+  it('should respond with guest book when authorized user requests', (done) => {
+    const users = { james: { name: 'james', password: 'james123' } };
+    const sessions = {
+      '348': {
+        username: 'james', time: '2022-07-13T07:22:50.414Z', sessionId: 348
+      }
+    }
+
+    request(app(config, users, sessions))
+      .get('/guest-book')
+      .set('Cookie', 'sessionId=348')
+      .expect(200)
+      .expect(/james.*Hello/, done);
+  });
+
+  it('should redirect to login page when unauthorized user requests', (done) => {
+    const users = {};
+    const sessions = {
+      '348': {
+        username: 'james', time: '2022-07-13T07:22:50.414Z', sessionId: 348
+      }
+    }
+    request(app(config))
+      .get('/guest-book')
+      .set('cookie', 'sessionId=123')
+      .expect('location', '/login')
+      .expect(302, done);
+  });
+});
+
+describe('POST /add-comment', () => {
+  it('should post a comment', (done) => {
+    const users = {};
+    const sessions = {
+      '348': {
+        username: 'james', time: '2022-07-13T07:22:50.414Z', sessionId: 348
+      }
+    }
+
+    request(app(config, users, sessions))
+      .post('/add-comment')
+      .set('Cookie', 'sessionId=348')
+      .send('name=james&comment=hello')
+      .expect(201, done);
   });
 });
