@@ -41,3 +41,29 @@ describe('GET /api', () => {
       .expect(comments, done);
   });
 });
+
+describe('GET /login', () => {
+  it('should give login page when user is not logged in', (done) => {
+    request(app({ serveFrom, dataFile }))
+      .get('/login')
+      .expect(200)
+      .expect('content-type', 'text/html')
+      .expect(/<form action="\/login" method="post">/, done);
+  });
+
+  it('should redirect to /guest-book when user has already logged in', (done) => {
+    const sessions = {
+      '1657696970414': {
+        username: 'james',
+        time: '2022-07-13T07:22:50.414Z',
+        sessionId: 1657696970414
+      }
+    }
+
+    request(app({ serveFrom, dataFile }, sessions))
+      .get('/login')
+      .set('cookie', 'sessionId=1657696970414')
+      .expect(302)
+      .expect('Location', '/guest-book', done);
+  });
+});

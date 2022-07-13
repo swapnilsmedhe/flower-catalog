@@ -6,4 +6,6 @@ const configuration = {
   dataFile: './data/guestBook.json'
 };
 
-startServer(80, app(configuration));
+const sessions = {};
+
+startServer(80, app(configuration, sessions));
