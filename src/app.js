@@ -13,7 +13,7 @@ const { createLoginHandler, loginPageHandler } = require('./app/loginHandler');
 const { createLogoutHandler } = require('./app/logoutHandler.js');
 const { createSignupHandler } = require('./app/signupHandler.js');
 
-const app = ({ serveFrom, dataFile: guestBookFile, logger }, users = {}, sessions = {}) => {
+const createApp = ({ serveFrom, dataFile: guestBookFile, logger }, users = {}, sessions = {}) => {
   const templateFile = './resources/guest-book-template.html';
   const guestBook = createGuestBook(guestBookFile, templateFile);
   const guestBookRouter = createGuestBookRouter(guestBook, guestBookFile);
@@ -43,4 +43,4 @@ const app = ({ serveFrom, dataFile: guestBookFile, logger }, users = {}, session
   return router;
 }
 
-module.exports = { app };
+module.exports = { createApp };

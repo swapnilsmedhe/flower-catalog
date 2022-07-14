@@ -1,6 +1,6 @@
 const fs = require('fs');
 const request = require('supertest');
-const { app } = require('../src/app.js');
+const { createApp } = require('../src/app.js');
 
 const logger = (x) => x;
 const serveFrom = './test/data';
@@ -9,14 +9,14 @@ const config = { serveFrom, dataFile, logger };
 
 describe('GET static pages', () => {
   it('should give Not found response with 404 on GET /hello.html', (done) => {
-    request(app(config))
+    request(createApp(config))
       .get('/hello')
       .expect('Not found')
       .expect(404, done);
   });
 
   it('should serve index.html on GET /', (done) => {
-    request(app(config))
+    request(createApp(config))
       .get('/')
       .expect(200)
       .expect('content-type', 'text/html')
@@ -36,7 +36,7 @@ describe('GET /api', () => {
   afterEach(() => fs.writeFileSync(config.dataFile, ''));
 
   it('should give comments as json on GET /api/comments', (done) => {
-    request(app(config))
+    request(createApp(config))
       .get('/api/comments')
       .expect(200)
       .expect('content-type', 'application/json')
@@ -46,7 +46,7 @@ describe('GET /api', () => {
 
 describe('GET /login', () => {
   it('should give login page when user is not logged in', (done) => {
-    request(app(config))
+    request(createApp(config))
       .get('/login')
       .expect(200)
       .expect('content-type', 'text/html')
@@ -61,7 +61,7 @@ describe('GET /login', () => {
       }
     }
 
-    request(app(config, users, sessions))
+    request(createApp(config, users, sessions))
       .get('/login')
       .set('cookie', 'sessionId=348')
       .expect('Location', '/guest-book')
@@ -78,7 +78,7 @@ describe('POST /login', () => {
       }
     }
 
-    request(app(config, users, sessions))
+    request(createApp(config, users, sessions))
       .post('/login')
       .send('username=james&password=james123')
       .expect('Location', '/guest-book')
@@ -87,7 +87,7 @@ describe('POST /login', () => {
   });
 
   it('should respond 401 for unauthorised users', (done) => {
-    request(app(config))
+    request(createApp(config))
       .post('/login')
       .send('username=james&password=james5')
       .expect(401)
@@ -104,7 +104,7 @@ describe('GET /logout', () => {
       }
     }
 
-    request(app(config, users, sessions))
+    request(createApp(config, users, sessions))
       .get('/logout')
       .set('cookie', 'sessionId=348')
       .expect('set-cookie', 'sessionId=348; Max-Age=0')
@@ -129,7 +129,7 @@ describe('GET /guest-book', () => {
   }
 
   it('should respond with guest book when authorized user requests', (done) => {
-    request(app(config, users, sessions))
+    request(createApp(config, users, sessions))
       .get('/guest-book')
       .set('Cookie', 'sessionId=348')
       .expect(200)
@@ -137,7 +137,7 @@ describe('GET /guest-book', () => {
   });
 
   it('should redirect to login page when unauthorized user requests', (done) => {
-    request(app(config))
+    request(createApp(config))
       .get('/guest-book')
       .set('cookie', 'sessionId=123')
       .expect('location', '/login')
@@ -154,7 +154,7 @@ describe('POST /add-comment', () => {
       }
     }
 
-    request(app(config, users, sessions))
+    request(createApp(config, users, sessions))
       .post('/add-comment')
       .set('Cookie', 'sessionId=348')
       .send('name=james&comment=hello')

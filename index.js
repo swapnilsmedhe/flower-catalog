@@ -1,5 +1,5 @@
 const { startServer } = require('./src/server/server.js');
-const { app } = require("./src/app");
+const { createApp } = require("./src/app");
 
 const configuration = {
   serveFrom: './public',
@@ -10,4 +10,4 @@ const configuration = {
 const users = { root: { name: 'root', password: 'root' } };
 const sessions = {};
 
-startServer(80, app(configuration, users, sessions));
+startServer(80, createApp(configuration, users, sessions));
