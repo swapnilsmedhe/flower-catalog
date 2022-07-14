@@ -11,7 +11,7 @@ describe('GET static pages', () => {
   it('should give Not found response with 404 on GET /hello.html', (done) => {
     request(createApp(config))
       .get('/hello')
-      .expect('Not found')
+      .expect(/Cannot GET \/hello/)
       .expect(404, done);
   });
 
@@ -19,7 +19,7 @@ describe('GET static pages', () => {
     request(createApp(config))
       .get('/')
       .expect(200)
-      .expect('content-type', 'text/html')
+      .expect('content-type', /text\/html/)
       .expect('Index page', done);
   });
 });
@@ -39,8 +39,8 @@ describe('GET /api', () => {
     request(createApp(config))
       .get('/api/comments')
       .expect(200)
-      .expect('content-type', 'application/json')
-      .expect(comments, done);
+      .expect('content-type', /application\/json/)
+      .expect(JSON.stringify(comments), done);
   });
 });
 
@@ -49,7 +49,7 @@ describe('GET /login', () => {
     request(createApp(config))
       .get('/login')
       .expect(200)
-      .expect('content-type', 'text/html')
+      .expect('content-type', /text\/html/)
       .expect(/<form action="\/login" method="post">/, done);
   });
 
@@ -107,7 +107,7 @@ describe('GET /logout', () => {
     request(createApp(config, users, sessions))
       .get('/logout')
       .set('cookie', 'sessionId=348')
-      .expect('set-cookie', 'sessionId=348; Max-Age=0')
+      .expect('set-cookie', /sessionId=;/)
       .expect(302)
       .expect('Location', '/login', done);
   });

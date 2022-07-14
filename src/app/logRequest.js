@@ -1,5 +1,5 @@
 const createRequestLogHandler = (logger) => (request, response, next) => {
-  logger(request.method, request.url.pathname);
+  logger(request.method, request.path);
   next();
 };
 

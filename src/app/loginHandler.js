@@ -1,23 +1,12 @@
 const { loginPage } = require('../view/loginPage.js');
 
-const redirectToGuestBook = (request, response) => {
-  response.statusCode = 302;
-  response.setHeader('Location', '/guest-book');
-  response.end();
-};
-
-const loginPageHandler = (request, response, next) => {
-  const { pathname } = request.url;
-  if (pathname !== '/login' || request.method !== 'GET') {
-    next();
-    return;
-  }
-
+const loginPageHandler = (request, response) => {
   if (request.session) {
-    redirectToGuestBook(request, response);
+    response.redirect('/guest-book');
     return;
   }
-  response.setHeader('Content-type', 'text/html');
+
+  response.set('Content-type', 'text/html');
   response.end(loginPage);
 };
 
@@ -34,31 +23,16 @@ const isUserValid = ({ username, password }, users) => {
   return password === user.password;
 };
 
-const getLoginCredentials = ({ bodyParams }) => {
-  const username = bodyParams.get('username');
-  const password = bodyParams.get('password');
-  return { username, password };
-};
-
 const invalidCredentialsHandler = (request, response) => {
-  response.statusCode = 401;
-  response.end('Invalid username or password');
+  response.status(401).end('Invalid username or password');
 };
 
-const createLoginHandler = (sessions, users) => (request, response, next) => {
-  const { pathname } = request.url;
-
-  if (pathname !== '/login' || request.method !== 'POST') {
-    next();
-    return;
-  }
-
+const createLoginHandler = (sessions, users) => (request, response) => {
   if (request.session) {
-    redirectToGuestBook(request, response);
-    return;
+    response.redirect('/guest-book');
   }
 
-  const loginCredentials = getLoginCredentials(request);
+  const loginCredentials = request.body;
   if (!isUserValid(loginCredentials, users)) {
     invalidCredentialsHandler(request, response);
     return;
@@ -66,9 +40,9 @@ const createLoginHandler = (sessions, users) => (request, response, next) => {
 
   const session = createSession(loginCredentials.username);
   sessions[session.sessionId] = session;
-  response.setHeader('Set-Cookie', `sessionId=${session.sessionId}`);
+  response.cookie('sessionId', session.sessionId);
 
-  redirectToGuestBook(request, response);
+  response.redirect('/guest-book');
 };
 
 module.exports = { createLoginHandler, loginPageHandler };
