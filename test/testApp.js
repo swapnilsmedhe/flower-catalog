@@ -55,7 +55,6 @@ describe('GET /login', () => {
 
   it('should redirect to /guest-book when user has already logged in', (done) => {
     const users = {};
-
     const sessions = {
       '348': {
         username: 'james', time: '2022-07-13T07:22:50.414Z', sessionId: 348
@@ -122,14 +121,14 @@ describe('GET /guest-book', () => {
   beforeEach(() => fs.writeFileSync(config.dataFile, JSON.stringify(comments)));
   afterEach(() => fs.writeFileSync(config.dataFile, ''));
 
-  it('should respond with guest book when authorized user requests', (done) => {
-    const users = { james: { name: 'james', password: 'james123' } };
-    const sessions = {
-      '348': {
-        username: 'james', time: '2022-07-13T07:22:50.414Z', sessionId: 348
-      }
+  const users = { james: { name: 'james', password: 'james123' } };
+  const sessions = {
+    '348': {
+      username: 'james', time: '2022-07-13T07:22:50.414Z', sessionId: 348
     }
+  }
 
+  it('should respond with guest book when authorized user requests', (done) => {
     request(app(config, users, sessions))
       .get('/guest-book')
       .set('Cookie', 'sessionId=348')
@@ -138,12 +137,6 @@ describe('GET /guest-book', () => {
   });
 
   it('should redirect to login page when unauthorized user requests', (done) => {
-    const users = {};
-    const sessions = {
-      '348': {
-        username: 'james', time: '2022-07-13T07:22:50.414Z', sessionId: 348
-      }
-    }
     request(app(config))
       .get('/guest-book')
       .set('cookie', 'sessionId=123')

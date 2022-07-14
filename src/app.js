@@ -11,6 +11,7 @@ const { injectCookies } = require('./app/injectCookies.js');
 const { createSessionInjector } = require('./app/injectSession.js');
 const { createLoginHandler, loginPageHandler } = require('./app/loginHandler');
 const { createLogoutHandler } = require('./app/logoutHandler.js');
+const { createSignupHandler } = require('./app/signupHandler.js');
 
 const app = ({ serveFrom, dataFile: guestBookFile, logger }, users = {}, sessions = {}) => {
   const templateFile = './resources/guest-book-template.html';
@@ -22,6 +23,7 @@ const app = ({ serveFrom, dataFile: guestBookFile, logger }, users = {}, session
   const injectSession = createSessionInjector(sessions);
   const loginHandler = createLoginHandler(sessions, users);
   const logoutHandler = createLogoutHandler(sessions);
+  const signupHandler = createSignupHandler(users);
 
   const router = createRouter(
     parseUrl,
@@ -29,6 +31,7 @@ const app = ({ serveFrom, dataFile: guestBookFile, logger }, users = {}, session
     logRequest,
     injectCookies,
     injectSession,
+    signupHandler,
     loginPageHandler,
     loginHandler,
     logoutHandler,

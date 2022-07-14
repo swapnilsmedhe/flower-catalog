@@ -7,17 +7,7 @@ const configuration = {
   logger: console.log
 };
 
-const users = {
-  swapnil: {
-    name: 'Swapnil',
-    password: 'IamSwapnil',
-  },
-  azhar: {
-    name: 'Azhar',
-    password: 'ha toh'
-  }
-};
-
+const users = { root: { name: 'root', password: 'root' } };
 const sessions = {};
 
 startServer(80, app(configuration, users, sessions));
