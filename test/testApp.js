@@ -1,4 +1,5 @@
 const fs = require('fs');
+const assert = require('assert');
 const request = require('supertest');
 const { createApp } = require('../src/app.js');
 
@@ -161,5 +162,22 @@ describe('POST /add-comment', () => {
       .set('Cookie', 'sessionId=348')
       .send('name=james&comment=hello')
       .expect(201, done);
+  });
+});
+
+describe('POST /signup', () => {
+  it('should register a user into the system', (done) => {
+    const users = {};
+
+    request(createApp(config, users))
+      .post('/signup')
+      .send('name=james&username=james&password=james123')
+      .expect(201)
+      .end((request, response) => {
+        assert.deepStrictEqual(users['james'], {
+          name: 'james', password: 'james123'
+        });
+        done();
+      });
   });
 });
