@@ -12,14 +12,14 @@ const {
   createAddcommentsHandler
 } = require('./app/guestBookHandler.js');
 
-const createApp = ({ serveFrom, dataFile: guestBookFile, logger }, users = {}, sessions = {}) => {
+const createApp = (config, users = {}, sessions = {}) => {
   const templateFile = './resources/guest-book-template.html';
-  const guestBook = createGuestBook(guestBookFile, templateFile);
+  const guestBook = createGuestBook(config.guestBookFile, templateFile);
 
   const apiHandler = createCommentsApiHandler(guestBook);
-  const logRequest = createRequestLogHandler(logger);
+  const logRequest = createRequestLogHandler(config.logger);
   const showGuestBook = createGuestBookHandler(guestBook);
-  const addComments = createAddcommentsHandler(guestBook, guestBookFile);
+  const addComments = createAddcommentsHandler(guestBook, config.guestBookFile);
 
   const injectSession = createSessionInjector(sessions);
   const loginHandler = createLoginHandler(sessions, users);
@@ -32,7 +32,8 @@ const createApp = ({ serveFrom, dataFile: guestBookFile, logger }, users = {}, s
   app.use(express.urlencoded({ extended: true }));
   app.use(injectCookies);
   app.use(injectSession);
-  app.use(express.static(serveFrom));
+  app.use(express.static(config.serveFrom));
+
   app.get('/api/comments', apiHandler);
   app.get('/login', loginPageHandler);
   app.get('/logout', logoutHandler);

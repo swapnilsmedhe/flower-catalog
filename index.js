@@ -2,7 +2,7 @@ const { createApp } = require("./src/app");
 
 const configuration = {
   serveFrom: './public',
-  dataFile: './data/guestBook.json',
+  guestBookFile: './data/guestBook.json',
   logger: console.log
 };
 

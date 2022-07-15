@@ -4,8 +4,8 @@ const { createApp } = require('../src/app.js');
 
 const logger = (x) => x;
 const serveFrom = './test/data';
-const dataFile = './test/data/guestBookData.json';
-const config = { serveFrom, dataFile, logger };
+const guestBookFile = './test/data/guestBookData.json';
+const config = { serveFrom, guestBookFile, logger };
 
 describe('GET static pages', () => {
   it('should give Not found response with 404 on GET /hello.html', (done) => {
@@ -30,10 +30,10 @@ describe('GET /api', () => {
   ];
 
   beforeEach(() => {
-    fs.writeFileSync(config.dataFile, JSON.stringify(comments));
+    fs.writeFileSync(config.guestBookFile, JSON.stringify(comments));
   });
 
-  afterEach(() => fs.writeFileSync(config.dataFile, ''));
+  afterEach(() => fs.writeFileSync(config.guestBookFile, ''));
 
   it('should give comments as json on GET /api/comments', (done) => {
     request(createApp(config))
@@ -118,8 +118,10 @@ describe('GET /guest-book', () => {
     { name: "james", comment: "Hello", timestamp: "13/07/2022 11:06:48" }
   ];
 
-  beforeEach(() => fs.writeFileSync(config.dataFile, JSON.stringify(comments)));
-  afterEach(() => fs.writeFileSync(config.dataFile, ''));
+  beforeEach(() =>
+    fs.writeFileSync(config.guestBookFile, JSON.stringify(comments)));
+
+  afterEach(() => fs.writeFileSync(config.guestBookFile, ''));
 
   const users = { james: { name: 'james', password: 'james123' } };
   const sessions = {
